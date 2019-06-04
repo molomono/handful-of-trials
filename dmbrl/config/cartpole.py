@@ -11,14 +11,16 @@ from dmbrl.misc.DotmapUtils import get_required_argument
 from dmbrl.modeling.layers import FC
 import dmbrl.env
 
+import roboschool
+import rl_environments
 
 class CartpoleConfigModule:
-    ENV_NAME = "MBRLCartpole-v0"
+    ENV_NAME = "RoboschoolInvertedPendulum-v1"
     TASK_HORIZON = 200
     NTRAIN_ITERS = 50
     NROLLOUTS_PER_ITER = 1
     PLAN_HOR = 25
-    MODEL_IN, MODEL_OUT = 6, 4
+    MODEL_IN, MODEL_OUT = 7, 5
     GP_NINDUCING_POINTS = 200
 
     def __init__(self):
@@ -41,7 +43,7 @@ class CartpoleConfigModule:
 
     @staticmethod
     def obs_preproc(obs):
-        if isinstance(obs, np.ndarray):
+        if isinstance(obs, np.ndarray) or isinstance(obs, np.matrix):
             return np.concatenate([np.sin(obs[:, 1:2]), np.cos(obs[:, 1:2]), obs[:, :1], obs[:, 2:]], axis=1)
         else:
             return tf.concat([tf.sin(obs[:, 1:2]), tf.cos(obs[:, 1:2]), obs[:, :1], obs[:, 2:]], axis=1)
@@ -56,7 +58,7 @@ class CartpoleConfigModule:
 
     @staticmethod
     def obs_cost_fn(obs):
-        if isinstance(obs, np.ndarray):
+        if isinstance(obs, np.ndarray) or isinstance(obs, np.matrix):
             return -np.exp(-np.sum(
                 np.square(CartpoleConfigModule._get_ee_pos(obs, are_tensors=False) - np.array([0.0, 0.6])), axis=1
             ) / (0.6 ** 2))
@@ -67,7 +69,7 @@ class CartpoleConfigModule:
 
     @staticmethod
     def ac_cost_fn(acs):
-        if isinstance(acs, np.ndarray):
+        if isinstance(acs, np.ndarray)or isinstance(acs, np.matrix):
             return 0.01 * np.sum(np.square(acs), axis=1)
         else:
             return 0.01 * tf.reduce_sum(tf.square(acs), axis=1)
