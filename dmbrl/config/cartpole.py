@@ -11,16 +11,16 @@ from dmbrl.misc.DotmapUtils import get_required_argument
 from dmbrl.modeling.layers import FC
 import dmbrl.env
 
-import roboschool
+#import roboschool
 import rl_environments
 
 class CartpoleConfigModule:
-    ENV_NAME = "RoboschoolInvertedPendulum-v1"
+    ENV_NAME = "VrepBalanceBotNoise-v0"
     TASK_HORIZON = 200
     NTRAIN_ITERS = 50
     NROLLOUTS_PER_ITER = 1
     PLAN_HOR = 25
-    MODEL_IN, MODEL_OUT = 7, 5
+    MODEL_IN, MODEL_OUT = 14, 11
     GP_NINDUCING_POINTS = 200
 
     def __init__(self):
